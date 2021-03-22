@@ -119,13 +119,13 @@ def decrypt(ct_list, private_key1,private_key2,p,q,r,s,z):
     print(type(ct_list))
     print(len(ct_list))'''
     for ct in ct_list:
-        print(ct)
+        # print(ct)
         decr = (pow(int(ct), private_key2, z))
-        print(decr)
+        # print(decr)
         c1.append(decr)
     for ct in c1:
         decr = chineseremaindertheorem(dq, dp, p, q, ct)
-        print(decr)
+        # print(decr)
         decrypted_mess.append(chr(decr))
         
     return decrypted_mess

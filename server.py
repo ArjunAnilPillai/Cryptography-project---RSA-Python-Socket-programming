@@ -5,7 +5,7 @@ import socket
 import threading 
 import crypt
 # Choose a port that is free 
-PORT = 8740
+PORT = 8721
 
 # An IPv4 address is obtained 
 # for the server. 
@@ -97,17 +97,17 @@ def handle(conn, addr):
 	while connected: 
 		# recieve message 
 		message = conn.recv(1024).decode(FORMAT)
-		print(message)
+		# print(message)
 		message = message[(message.index('[') + 1):]
 		message = message[:message.index(']')]
 		message = [i.strip() for i in message.split(',')]
 		message = [i[1:] for i in message]
 		message = [i[:-1] for i in message]
 		message = [int(i) for i in message]
-		print(message)
+		# print(message)
 		# broadcast message 
 		de = crypt.decrypt(message,private_key1,private_key2,p,q,r,s,z)
-		print(de)
+		# print(de)
 		broadcastMessage(''.join(de))
 		
 		# close the connection 

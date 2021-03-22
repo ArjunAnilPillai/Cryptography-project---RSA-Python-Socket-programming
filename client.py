@@ -9,7 +9,7 @@ import crypt
 # import all functions / 
 # everthing from chat.py file 
 
-PORT = 8740
+PORT = 8721
 SERVER = "127.0.1.1"
 ADDRESS = (SERVER, PORT) 
 FORMAT = "utf-8"
