@@ -9,7 +9,7 @@ import crypt
 # import all functions / 
 # everthing from chat.py file 
 
-PORT = 4149
+PORT = 8740
 SERVER = "127.0.1.1"
 ADDRESS = (SERVER, PORT) 
 FORMAT = "utf-8"
@@ -194,12 +194,28 @@ class GUI:
 		while True: 
 			try: 
 				message = client.recv(1024).decode(FORMAT) 
+
 					
 				# if the messages from the server is NAME send the client's name 
 				if message == 'NAME': 
 					client.send(self.name.encode(FORMAT)) 
+				elif message == "Connection successful!":
+					self.textCons.config(state = NORMAL) 
+					self.textCons.insert(END, 
+											message+"\n\n") 
+						
+					self.textCons.config(state = DISABLED) 
+					self.textCons.see(END)
 				else: 
-					# insert messages to text box 
+					# insert messages to text box
+					message = message[(message.index('[') + 1):]
+					message = message[:message.index(']')]
+					message = [i.strip() for i in message.split(',')]
+					message = [i[1:] for i in message]
+					message = [i[:-1] for i in message]
+					message = [int(i) for i in message]
+					message = crypt.decrypt(message,private_key1,private_key2,p,q,r,s,z) 
+					message = ''.join(message)
 					self.textCons.config(state = NORMAL) 
 					self.textCons.insert(END, 
 											message+"\n\n") 
@@ -216,7 +232,7 @@ class GUI:
 	def sendMessage(self): 
 		self.textCons.config(state=DISABLED) 
 		while True: 
-			self.msg = self.name + ' - ' + self.msg
+			self.msg = self.name + '-' + self.msg
 			self.msg = crypt.encrypt(self.msg,public_key1_server,public_key2_server,n_server,z_server)
 			message =  (f"{self.msg}")
 			client.send(message.encode(FORMAT)) 

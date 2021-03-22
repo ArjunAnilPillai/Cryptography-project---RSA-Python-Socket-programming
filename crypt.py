@@ -48,20 +48,25 @@ def runRSA(bits):
 
 
 def encrypt(message, public_key1, public_key2, n, z):
+    if type(message) == list:
+        message = [str(i) for i in message]
+        message = ''.join(message)
     enc_list1 = []
     enc_list2 = []
     #print("Encypting your message..")
     for char in message:
-        print(char)
-        mess = ord(char)
+        #print(char)
+        mess = char
+        if not type(char) == int:
+            mess = ord(char)
         enc_mess = str(pow(mess, public_key1, n))
-        print(enc_mess)
+        #print(enc_mess)
         enc_list1.append(enc_mess)
         
     for char in enc_list1:
         mess = int(char)
         ciph = str(pow(mess, public_key2, z))
-        print(ciph)
+        #print(ciph)
         enc_list2.append(ciph)
     return enc_list2
 
@@ -110,9 +115,9 @@ def decrypt(ct_list, private_key1,private_key2,p,q,r,s,z):
     dq = pow(private_key1, 1, q - 1) 
     dp = pow(private_key1, 1, p - 1)
     print("\nDecrypting your message\n")
-    print(ct_list)
+    '''print(ct_list)
     print(type(ct_list))
-    print(len(ct_list))
+    print(len(ct_list))'''
     for ct in ct_list:
         print(ct)
         decr = (pow(int(ct), private_key2, z))

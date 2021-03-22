@@ -5,7 +5,7 @@ import socket
 import threading 
 import crypt
 # Choose a port that is free 
-PORT = 4149
+PORT = 8740
 
 # An IPv4 address is obtained 
 # for the server. 
@@ -22,6 +22,9 @@ print('public key1: ' + str(public_key1) + ' n1: ' + str(n) + ' public key2: ' +
 # Lists that will contains 
 # all the clients connected to 
 # the server and their names. 
+global clients, names
+global public_key1_clients, public_key2_clients
+global n1_clients, n2_clients
 clients, names = [], [] 
 public_key1_clients, public_key2_clients = [] , []
 n1_clients, n2_clients = [], []
@@ -54,7 +57,7 @@ def startChat():
 		rec = conn.recv(1024).decode(FORMAT)
 		public_key1_client, n_client,public_key2_client,z_client = [int(i) for i in conn.recv(1024).decode('utf-8').split('\n')]
 		# 1024 represents the max amount 
-		# of data that can be received (bytes) 
+		# of data that can be received (bytes)
 		conn.send("NAME".encode(FORMAT))
 		name = conn.recv(1024).decode(FORMAT) 
 		
@@ -62,12 +65,16 @@ def startChat():
 		# to the respective list 
 		names.append(name) 
 		clients.append(conn) 
+		public_key1_clients.append(public_key1_client) 
+		public_key2_clients.append(public_key2_client)
+		n1_clients.append(n_client) 
+		n2_clients.append(z_client)
 		
 
 		print(f"Name is :{name}") 
 		
 		# broadcast message 
-		broadcastMessage(f"{name} has joined the chat!".encode(FORMAT)) 
+		broadcastMessage(f"{name} has joined the chat!") 
 		
 		conn.send('Connection successful!'.encode(FORMAT)) 
 		
@@ -109,8 +116,11 @@ def handle(conn, addr):
 # method for broadcasting 
 # messages to the each clients 
 def broadcastMessage(message): 
-	for client in clients: 
-		client.send(str(message).encode(FORMAT)) 
+	i = 0
+	for client in clients:
+		msg = crypt.encrypt(message,public_key1_clients[i],public_key2_clients[i],n1_clients[i],n2_clients[i])
+		client.send(f"{msg}".encode(FORMAT)) 
+		i = i + 1
 
 # call the method to 
 # begin the communication 
